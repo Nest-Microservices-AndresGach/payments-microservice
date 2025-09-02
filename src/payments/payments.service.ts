@@ -34,8 +34,8 @@ export class PaymentsService {
 
       line_items: lineItems,
       mode: 'payment',
-      success_url: 'http://localhost:3003/payments/success',
-      cancel_url: 'http://localhost:3003/payments/cancel',
+      success_url: envs.stripeSuccessUrl,
+      cancel_url: envs.stripeCancelUrl,
     });
     return session;
   }
@@ -44,12 +44,8 @@ export class PaymentsService {
     const signature = req.headers['stripe-signature'] as string; // * EL 'as string' no iba pero como el objeto no sabe de que tipo es, lo fuerzo para que funcione
 
     let event: Stripe.Event;
-    // * ENPOINT DE TESTING
-    // const endpointSecret =
-    //   'whsec_c20faadd63bdeb42dd049745b285d1d12fb9b346281caaf785079a02e78c0a54';
-
     // ENDPOINT REAL
-    const endpointSecret = 'whsec_SGoKeA2pvw6J0HVw5qp5xvk6gwARhIWR';
+    const endpointSecret = envs.stripeEndpointSecret;
     try {
       event = this.stripe.webhooks.constructEvent(
         req['rawBody'],
